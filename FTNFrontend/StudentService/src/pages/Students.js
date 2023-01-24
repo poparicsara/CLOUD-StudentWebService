@@ -1,47 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../App.css'
 import Navbar from '../components/Navbar';
-import logo from '../assets/logo.png';
 import info from '../assets/info.png';
 import plus from '../assets/plus.png';
 import pic from '../assets/background2.jpeg';
 import NewStudent from '../modals/NewStudent';
+import axios from 'axios';
 
 const Students = () => {
 
-    const [students, setStudents] = useState([
-        {
-            name: "Sara",
-            surname: "Poparic",
-            jmbg: "2809999815155",
-            index: "RA 60/2018"
-        },
-        {
-            name: "Ognjen",
-            surname: "Bogdanovic",
-            jmbg: "1206999815155",
-            index: "RA 101/2018"
-        },
-        {
-            name: "Ognjen",
-            surname: "Bogdanovic",
-            jmbg: "1206999815155",
-            index: "RA 101/2018"
-        },
-        {
-            name: "Ognjen",
-            surname: "Bogdanovic",
-            jmbg: "1206999815155",
-            index: "RA 101/2018"
-        },
-        {
-            name: "Ognjen",
-            surname: "Bogdanovic",
-            jmbg: "1206999815155",
-            index: "RA 101/2018"
-        },
-    ]);
+    const [students, setStudents] = useState([]);
     const [newStudentModal, setNewStudentModal] = useState(false);
+
+
+    useEffect(() => {
+        axios.get('http://localhost:8081/getStudents', {
+            headers:{
+                Accept: 'application/json',
+                'Content-type': 'application/json',
+            },
+        })
+        .then((response) => {
+            setStudents(response.data);
+        })
+      }, []);
     
 
     return (
@@ -61,7 +43,7 @@ const Students = () => {
                 </div>
                 <div className='overflow-auto h-full ml-40 '>
                     {students.map((student, i) => (
-                        <div className='flex h-40 bg-slate-50 text-xl font-bold  text-stone-900 border-b-2 border-stone-400 border-solid '>
+                        <div className='flex h-40 bg-slate-50 text-xl font-bold  text-stone-900 border-b-2 border-stone-400 border-solid ' key={student.id}>
                             <div className='h-full w-2/12  place-content-center  '>
                                 <img className='h-32 w-32 rounded-3xl ml-8 mt-4' src={pic} alt="Student image" />
                             </div>
