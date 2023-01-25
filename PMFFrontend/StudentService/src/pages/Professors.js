@@ -1,41 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../App.css'
 import Navbar from '../components/Navbar';
 import info from '../assets/info.png';
 import plus from '../assets/plus.png';
 import pic from '../assets/background2.jpeg';
 import NewProfessor from '../modals/NewProfessor';
+import axios from 'axios';
 
 const Professors = () => {
 
-    const [professors, setProfessors] = useState([
-        {
-            name: "Sara",
-            surname: "Poparic",
-            jmbg: "2809999815155",
-        },
-        {
-            name: "Ognjen",
-            surname: "Bogdanovic",
-            jmbg: "1206999815155",
-        },
-        {
-            name: "Ognjen",
-            surname: "Bogdanovic",
-            jmbg: "1206999815155",
-        },
-        {
-            name: "Ognjen",
-            surname: "Bogdanovic",
-            jmbg: "1206999815155",
-        },
-        {
-            name: "Ognjen",
-            surname: "Bogdanovic",
-            jmbg: "1206999815155",
-        },
-    ]);
+    const [professors, setProfessors] = useState([]);
     const [newProfessorModal, setNewProfessorModal] = useState(false);
+
+    useEffect(() => {
+        axios.get('http://localhost:8082/pmf/professors', {
+            headers:{
+                Accept: 'application/json',
+                'Content-type': 'application/json',
+            },
+        })
+        .then((response) => {
+            setProfessors(response.data);
+        })
+      }, []);
     
 
     return (

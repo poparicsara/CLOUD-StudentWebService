@@ -60,7 +60,7 @@ export default function NewProfessor({ modalIsOpen, setModalIsOpen }) {
                                 {/*header*/}
                                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
                                     <h3 className="text-3xl font-semibold text-stone-900">
-                                        New student
+                                        New professor
                                     </h3>
                                     <div className="ml-auto bg-transparent border-0 opacity-4 float-right text-3xl leading-none font-semibold cursor-pointer"
                                         onClick={() => setModalIsOpen(false)} >

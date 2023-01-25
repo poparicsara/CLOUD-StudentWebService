@@ -14,7 +14,7 @@ const Students = () => {
 
 
     useEffect(() => {
-        axios.get('http://localhost:8081/getStudents', {
+        axios.get('http://localhost:8082/pmf/students', {
             headers:{
                 Accept: 'application/json',
                 'Content-type': 'application/json',
