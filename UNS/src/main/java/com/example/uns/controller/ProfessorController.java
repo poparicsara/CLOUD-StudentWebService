@@ -21,6 +21,8 @@ public class ProfessorController {
     @Autowired
     private ProfessorRepository repository;
 
+    private int counter;
+
     @GetMapping("/professors")
     public List<Professor> getAllProfessors() {
         return repository.findAll();
@@ -28,6 +30,8 @@ public class ProfessorController {
 
     @PostMapping("/professors")
     public ResponseEntity<Void> createProfessor(@RequestBody Professor professor) {
+        counter++;
+        System.out.println("Counter:" + counter);
         if (repository.findByJmbg(professor.getJmbg()) != null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

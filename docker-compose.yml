@@ -11,8 +11,7 @@ services:
       - POSTGRES_USER=ftn
     volumes:
       - ftn-data:/var/lib/postgresql/data
-    networks:
-      - cloud-network
+
 
   ftn-container:
     build: ./FTNBackend 
@@ -22,8 +21,7 @@ services:
       - ./FTNBackend:/app
     depends_on:
       - postgres-container
-    networks:
-      - cloud-network
+
 
   pmf-container:
     build: ./PMFBackend 
@@ -33,8 +31,7 @@ services:
       - ./PMFBackend:/app
     depends_on:
       - pmf-postgres
-    networks:
-      - cloud-network
+
 
   pmf-postgres:
     image: postgres
@@ -45,8 +42,7 @@ services:
       - POSTGRES_USER=ftn
     volumes:
       - pmf-data:/var/lib/postgresql/data
-    networks:
-      - cloud-network
+
 
   pravni-container:
     build: ./PRAVNIBackend 
@@ -56,8 +52,7 @@ services:
       - ./PRAVNIBackend:/app
     depends_on:
       - pravni-postgres
-    networks:
-      - cloud-network
+
 
   pravni-postgres:
     image: postgres
@@ -68,14 +63,41 @@ services:
       - POSTGRES_USER=ftn
     volumes:
       - pravni-data:/var/lib/postgresql/data
-    networks:
-      - cloud-network
 
-networks:
-  cloud-network:
-    external: true
+
+  uns-postgres:
+    image: postgres   
+    container_name: uns-postgres
+    volumes:
+      - uns-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    restart: unless-stopped
+
+  uns:
+    build: ./UNS
+    container_name: uns
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    depends_on:
+      - uns-postgres
+    volumes:
+      - ./UNS/src:/var/tmp
+    restart: unless-stopped
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://uns-postgres:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
 volumes:
   ftn-data:
   pravni-data:
   pmf-data:
+  uns-data:
