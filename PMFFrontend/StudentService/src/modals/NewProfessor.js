@@ -1,14 +1,16 @@
 import { useState } from "react";
+import axios from 'axios';
 
-export default function NewProfessor({ modalIsOpen, setModalIsOpen }) {
+export default function NewProfessor({ modalIsOpen, setModalIsOpen, addProfessor }) {
 
     const [professor, setProfessor] = useState({
         name: "",
         surname: "",
         jmbg: "",
+        image: ""
     });
+    const [file, setFile] = useState(null);
     const [uploadedImage, setUploadedImage] = useState("");
-    const [base64, setBase64] = useState("");
 
     const nameChangeHandler = (e) => {
         const value = e.target.value;
@@ -35,17 +37,27 @@ export default function NewProfessor({ modalIsOpen, setModalIsOpen }) {
     };
 
     const imageHandler = (e) => {
+        const file = e.target.files[0];
+        setFile(file);
         const reader = new FileReader();
-        reader.onload = () =>{
+        reader.readAsDataURL(file);
+        reader.onload = () => {
             setUploadedImage(reader.result);
-            setBase64(reader.result);
-            console.log(reader.result);
         }
-        reader.readAsDataURL(e.target.files[0])
     };
 
-    const addProfessor = () => {
-        console.log(professor);
+    const handleSubmit = () => {
+
+        let formData = new FormData();
+        formData.set('enctype', 'multipart/form-data');
+        formData.append('file', file);
+        formData.append('name', professor.name);
+        formData.append('surname', professor.surname);
+        formData.append('jmbg', professor.jmbg);
+
+        setModalIsOpen(false);
+        addProfessor(formData);
+
     }
 
     return(
@@ -144,7 +156,7 @@ export default function NewProfessor({ modalIsOpen, setModalIsOpen }) {
                                     <div
                                         className="bg-white text-stone-900 font-bold uppercase text-lg outline-none mr-1 mb-1 ease-linear cursor-pointer"
                                         type="button"
-                                        onClick={() => addProfessor()}
+                                        onClick={() => handleSubmit()}
                                     >
                                         Save
                                     </div>

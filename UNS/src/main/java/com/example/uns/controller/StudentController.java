@@ -20,6 +20,8 @@ public class StudentController {
     @Autowired
     private StudentRepository repository;
 
+    private int counter;
+
     @GetMapping("/students")
     public List<Student> getAllStudents() {
         return repository.findAll();
@@ -30,6 +32,8 @@ public class StudentController {
         if (repository.findByJmbg(student.getJmbg()) != null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        counter++;
+        System.out.println("Counter:" + counter);
         repository.save(student);
         return new ResponseEntity<>(HttpStatus.OK);
     }

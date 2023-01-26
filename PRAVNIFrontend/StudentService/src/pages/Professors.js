@@ -3,9 +3,10 @@ import '../App.css'
 import Navbar from '../components/Navbar';
 import info from '../assets/info.png';
 import plus from '../assets/plus.png';
-import pic from '../assets/background2.jpeg';
 import NewProfessor from '../modals/NewProfessor';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Professors = () => {
 
@@ -21,8 +22,37 @@ const Professors = () => {
         })
         .then((response) => {
             setProfessors(response.data);
+            console.log(response.data)
         })
-      }, []);
+    }, []);
+
+
+    const addProfessor = (professor) => {
+
+        axios.post("http://localhost:8083/pravni/professor", professor, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Accept': 'application/json',
+            }
+        })
+            .then(response => {
+                if(response.status == 201) {
+                    toast.success('Professor successfully added!', {
+                        position: toast.POSITION.TOP_RIGHT
+                    });
+                } else {
+                    toast.error('Professor with specified jmbg already exists!', {
+                        position: toast.POSITION.TOP_RIGHT
+                    });
+                }
+            })
+            .catch(e => {
+                toast.error('Professor with specified jmbg already exists!', {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            })
+
+    }
     
 
     return (
@@ -44,7 +74,7 @@ const Professors = () => {
                     {professors.map((professor, i) => (
                         <div className='flex h-40 bg-slate-50 text-xl font-bold  text-stone-900 border-b-2 border-stone-400 border-solid '>
                             <div className='h-full w-2/12  place-content-center  '>
-                                <img className='h-32 w-32 rounded-3xl ml-8 mt-4' src={pic} alt="Student image" />
+                                <img className='h-32 w-32 rounded-3xl ml-8 mt-4' src={`data:image/png;base64,${professor.image}`} alt="Student image" />
                             </div>
                             <div className='w-full h-full'>
                                 <div className='flex w-full h-1/2 mt-6 ml-28 '>
@@ -64,7 +94,9 @@ const Professors = () => {
                 </div>
             </div>
 
-            <NewProfessor modalIsOpen={newProfessorModal} setModalIsOpen={setNewProfessorModal} />
+            <NewProfessor modalIsOpen={newProfessorModal} setModalIsOpen={setNewProfessorModal} addProfessor={addProfessor} />
+
+            <ToastContainer />
             
         </div>
     )

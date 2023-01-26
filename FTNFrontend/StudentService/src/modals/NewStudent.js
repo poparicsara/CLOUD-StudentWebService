@@ -7,7 +7,66 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen, addStudent }) 
         surname: "",
         jmbg: "",
         index: "",
+        image: ""
     })
+    const [file, setFile] = useState(null);
+    const [uploadedImage, setUploadedImage] = useState("");
+
+    const nameChangeHandler = (e) => {
+        const value = e.target.value;
+        setStudent(() => {return {...student, name: value}});
+        if (!value) {
+          return;
+        }
+    };
+
+    const surnameChangeHandler = (e) => {
+        const value = e.target.value;
+        setStudent(() => {return {...student, surname: value}});
+        if (!value) {
+          return;
+        }
+    };
+
+    const jmbgChangeHandler = (e) => {
+        const value = e.target.value;
+        setStudent(() => {return {...student, jmbg: value}});
+        if (!value) {
+          return;
+        }
+    };
+
+    const indexChangeHandler = (e) => {
+        const value = e.target.value;
+        setStudent(() => {return {...student, index: value}});
+        if (!value) {
+          return;
+        }
+    };
+
+    const imageHandler = (e) => {
+        const file = e.target.files[0];
+        setFile(file);
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            setUploadedImage(reader.result);
+        }
+    };
+
+    const handleSubmit = () => {
+
+        let formData = new FormData();
+        formData.set('enctype', 'multipart/form-data');
+        formData.append('file', file);
+        formData.append('name', student.name);
+        formData.append('surname', student.surname);
+        formData.append('jmbg', student.jmbg);
+        formData.append('index', student.index);
+
+        setModalIsOpen(false);
+        addStudent(formData);
+    }
 
     return(
         <>
@@ -45,6 +104,7 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen, addStudent }) 
                                             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-900 text-xl"
                                             id="inline-full-name"
                                             type="text"
+                                            onChange={nameChangeHandler}
                                             />
                                         </div>
                                     </div>
@@ -62,6 +122,7 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen, addStudent }) 
                                             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 text-xl leading-tight focus:outline-none focus:bg-white focus:border-gray-900"
                                             id="inline-full-name"
                                             type="text"
+                                            onChange={surnameChangeHandler}
                                             />
                                         </div>
                                     </div>
@@ -79,6 +140,7 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen, addStudent }) 
                                             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 text-xl leading-tight focus:outline-none focus:bg-white focus:border-gray-900"
                                             id="inline-full-name"
                                             type="text"
+                                            onChange={jmbgChangeHandler}
                                             />
                                         </div>
                                     </div>
@@ -96,7 +158,14 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen, addStudent }) 
                                             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 text-xl leading-tight focus:outline-none focus:bg-white focus:border-gray-900"
                                             id="inline-full-name"
                                             type="text"
+                                            onChange={indexChangeHandler}
                                             />
+                                        </div>
+                                    </div>
+                                    <div className="w-11/12 md:flex items-center mb-6 ml-4 rounded-xl border-2 border-solid border-stone-300">
+                                        <div class="">
+                                            <input className="w-80 border-0" type="file" name="image" accept="image/png, image/jpeg" onChange={(e) => imageHandler(e)} />
+                                            <img className="ml-12 mb-8" alt='preview' src={uploadedImage} width="250" height="250"/>
                                         </div>
                                     </div>
                                 </div>
@@ -113,6 +182,7 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen, addStudent }) 
                                     <div
                                         className="bg-white text-stone-900 font-bold uppercase text-lg outline-none mr-1 mb-1 ease-linear cursor-pointer"
                                         type="button"
+                                        onClick={() => handleSubmit()}
                                     >
                                         Save
                                     </div>
