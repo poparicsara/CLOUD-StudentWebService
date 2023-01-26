@@ -3,9 +3,10 @@ import '../App.css'
 import Navbar from '../components/Navbar';
 import info from '../assets/info.png';
 import plus from '../assets/plus.png';
-import pic from '../assets/background2.jpeg';
 import NewStudent from '../modals/NewStudent';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Students = () => {
 
@@ -22,8 +23,36 @@ const Students = () => {
         })
         .then((response) => {
             setStudents(response.data);
+            console.log(response.data);
         })
-      }, []);
+    }, []);
+
+    const addStudent = (student) => {
+
+        axios.post("http://localhost:8083/pravni/student", student, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Accept': 'application/json',
+            }
+        })
+            .then(response => {
+                if(response.status == 201) {
+                    toast.success('Student successfully added!', {
+                        position: toast.POSITION.TOP_RIGHT
+                    });
+                } else {
+                    toast.error('Student with specified jmbg already exists!', {
+                        position: toast.POSITION.TOP_RIGHT
+                    });
+                }
+            })
+            .catch(e => {
+                toast.error('Student with specified jmbg already exists!', {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            })
+
+    }
     
 
     return (
@@ -45,7 +74,7 @@ const Students = () => {
                     {students.map((student, i) => (
                         <div className='flex h-40 bg-slate-50 text-xl font-bold  text-stone-900 border-b-2 border-stone-400 border-solid ' key={student.id}>
                             <div className='h-full w-2/12  place-content-center  '>
-                                <img className='h-32 w-32 rounded-3xl ml-8 mt-4' src={pic} alt="Student image" />
+                                <img className='h-32 w-32 rounded-3xl ml-8 mt-4' src={`data:image/png;base64,${student.image}`} alt="Student image" />
                             </div>
                             <div className='w-full h-full'>
                                 <div className='flex w-full h-1/2 mt-6 ml-28 '>
@@ -66,7 +95,9 @@ const Students = () => {
                 </div>
             </div>
 
-            <NewStudent modalIsOpen={newStudentModal} setModalIsOpen={setNewStudentModal}  />
+            <NewStudent modalIsOpen={newStudentModal} setModalIsOpen={setNewStudentModal} addStudent={addStudent}  />
+
+            <ToastContainer />
             
         </div>
     )

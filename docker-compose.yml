@@ -9,6 +9,8 @@ services:
     environment:
       - POSTGRES_PASSWORD=ftn
       - POSTGRES_USER=ftn
+    volumes:
+      - ftn-data:/var/lib/postgresql/data
     networks:
       - cloud-network
 
@@ -30,7 +32,7 @@ services:
     volumes:
       - ./PMFBackend:/app
     depends_on:
-      - postgres-container
+      - pmf-postgres
     networks:
       - cloud-network
 
@@ -41,9 +43,39 @@ services:
     environment:
       - POSTGRES_PASSWORD=ftn
       - POSTGRES_USER=ftn
+    volumes:
+      - pmf-data:/var/lib/postgresql/data
+    networks:
+      - cloud-network
+
+  pravni-container:
+    build: ./PRAVNIBackend 
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./PRAVNIBackend:/app
+    depends_on:
+      - pravni-postgres
+    networks:
+      - cloud-network
+
+  pravni-postgres:
+    image: postgres
+    ports:
+      - "5435:5432"
+    environment:
+      - POSTGRES_PASSWORD=ftn
+      - POSTGRES_USER=ftn
+    volumes:
+      - pravni-data:/var/lib/postgresql/data
     networks:
       - cloud-network
 
 networks:
   cloud-network:
     external: true
+
+volumes:
+  ftn-data:
+  pravni-data:
+  pmf-data:
