@@ -37,7 +37,7 @@ def new_student(request):
     student_json = model_to_dict(student)
 
     headers = {'Content-type': 'application/json'}
-    response = requests.post('http://uns:8080/uns/students', data=json.dumps(student_json), headers=headers, verify=False) 
+    response = requests.post('http://nginx:80/uns/students', data=json.dumps(student_json), headers=headers, verify=False) 
 
     if response.status_code == 200:
         file = request.FILES['file']
@@ -71,7 +71,7 @@ def new_professor(request):
     professor_json = model_to_dict(professor)
 
     headers = {'Content-type': 'application/json'}
-    response = requests.post('http://uns:8080/uns/professors', data=json.dumps(professor_json), headers=headers, verify=False) 
+    response = requests.post('http://nginx:80/uns/professors', data=json.dumps(professor_json), headers=headers, verify=False) 
 
     if response.status_code == 200:
         file = request.FILES['file']

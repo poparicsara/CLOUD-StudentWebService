@@ -78,13 +78,27 @@ services:
       - POSTGRES_DB=postgres
     restart: unless-stopped
 
-  uns:
+  uns1:
     build: ./UNS
-    container_name: uns
-    expose:
-      - 8080
+    container_name: uns1
     ports:
-      - 8080:8080
+      - 9001:8080
+    depends_on:
+      - uns-postgres
+    volumes:
+      - ./UNS/src:/var/tmp
+    restart: unless-stopped
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://uns-postgres:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  
+  uns2:
+    build: ./UNS
+    container_name: uns2
+    ports:
+      - 9002:8080
     depends_on:
       - uns-postgres
     volumes:
@@ -96,6 +110,16 @@ services:
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+    depends_on:
+      - uns1
+      - uns2
+    ports:
+      - 80:80
+      
 volumes:
   ftn-data:
   pravni-data:
