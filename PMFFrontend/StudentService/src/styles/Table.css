@@ -1,0 +1,29 @@
+.table {
+    width: 80%;
+    height: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    align-self: center;
+    border-width: 1;
+    border-color: black;
+    border-style: solid;
+    color: red;
+}
+
+.table-row {
+    background-color: white;
+    border-width: 1;
+    border-color: black;
+    border-style: solid;
+    width: 20%;
+    color: red;
+    font-size: 20px;
+    margin-left: auto;
+}
+
+.data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
