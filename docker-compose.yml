@@ -1,0 +1,28 @@
+version: '3.1'
+
+services:
+
+  postgres-container:
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=ftn
+      - POSTGRES_USER=ftn
+    networks:
+      - cloud-network
+
+  ftn-container:
+    build: ./FTNBackend 
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./FTNBackend:/app
+    depends_on:
+      - postgres-container
+    networks:
+      - cloud-network
+
+networks:
+  cloud-network:
+    external: true
