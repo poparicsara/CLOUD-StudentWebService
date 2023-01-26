@@ -1,15 +1,16 @@
 import { useState } from "react";
 
-export default function NewStudent({ modalIsOpen, setModalIsOpen }) {
+export default function NewStudent({ modalIsOpen, setModalIsOpen, addStudent }) {
 
     const [student, setStudent] = useState({
         name: "",
         surname: "",
         jmbg: "",
         index: "",
-    });
+        image: ""
+    })
+    const [file, setFile] = useState(null);
     const [uploadedImage, setUploadedImage] = useState("");
-    const [base64, setBase64] = useState("");
 
     const nameChangeHandler = (e) => {
         const value = e.target.value;
@@ -44,17 +45,27 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen }) {
     };
 
     const imageHandler = (e) => {
+        const file = e.target.files[0];
+        setFile(file);
         const reader = new FileReader();
-        reader.onload = () =>{
+        reader.readAsDataURL(file);
+        reader.onload = () => {
             setUploadedImage(reader.result);
-            setBase64(reader.result);
-            console.log(reader.result);
         }
-        reader.readAsDataURL(e.target.files[0])
     };
 
-    const addStudent = () => {
-        console.log(student);
+    const handleSubmit = () => {
+
+        let formData = new FormData();
+        formData.set('enctype', 'multipart/form-data');
+        formData.append('file', file);
+        formData.append('name', student.name);
+        formData.append('surname', student.surname);
+        formData.append('jmbg', student.jmbg);
+        formData.append('index', student.index);
+
+        setModalIsOpen(false);
+        addStudent(formData);
     }
 
     return(
@@ -79,7 +90,7 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen }) {
 
                                 {/*body*/}
                                 <div className="w-96 text-sm">
-                                    <div className="w-96 md:flex items-center mb-6 mt-10 ml-6">
+                                    <div className="w-96 md:flex items-center mb-6 mt-4 ml-6">
                                         <div className="">
                                             <label
                                             className="block text-gray-500 font-bold md:text-right pr-4"
@@ -88,9 +99,9 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen }) {
                                                 Name:
                                             </label>
                                         </div>
-                                        <div className="md:w-2/3 ml-auto mr-5">
+                                        <div className="md:w-2/3 ml-auto mr-2">
                                             <input
-                                            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-900 text-xl text-left"
+                                            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-900 text-xl"
                                             id="inline-full-name"
                                             type="text"
                                             onChange={nameChangeHandler}
@@ -106,9 +117,9 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen }) {
                                                 Surname:
                                             </label>
                                         </div>
-                                        <div className="md:w-2/3 ml-auto mr-5">
+                                        <div className="md:w-2/3 ml-auto mr-2">
                                             <input
-                                            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 text-xl leading-tight focus:outline-none focus:bg-white focus:border-gray-900 text-left"
+                                            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 text-xl leading-tight focus:outline-none focus:bg-white focus:border-gray-900"
                                             id="inline-full-name"
                                             type="text"
                                             onChange={surnameChangeHandler}
@@ -124,9 +135,9 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen }) {
                                                 JMBG:
                                             </label>
                                         </div>
-                                        <div className="md:w-2/3 ml-auto mr-5">
+                                        <div className="md:w-2/3 ml-auto mr-2">
                                             <input
-                                            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 text-xl leading-tight focus:outline-none focus:bg-white focus:border-gray-900 text-left"
+                                            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 text-xl leading-tight focus:outline-none focus:bg-white focus:border-gray-900"
                                             id="inline-full-name"
                                             type="text"
                                             onChange={jmbgChangeHandler}
@@ -142,9 +153,9 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen }) {
                                                 Index:
                                             </label>
                                         </div>
-                                        <div className="md:w-2/3 ml-auto mr-5">
+                                        <div className="md:w-2/3 ml-auto mr-2">
                                             <input
-                                            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 text-xl leading-tight focus:outline-none focus:bg-white focus:border-gray-900 text-left"
+                                            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-56 py-2 px-4 text-gray-700 text-xl leading-tight focus:outline-none focus:bg-white focus:border-gray-900"
                                             id="inline-full-name"
                                             type="text"
                                             onChange={indexChangeHandler}
@@ -171,7 +182,7 @@ export default function NewStudent({ modalIsOpen, setModalIsOpen }) {
                                     <div
                                         className="bg-white text-stone-900 font-bold uppercase text-lg outline-none mr-1 mb-1 ease-linear cursor-pointer"
                                         type="button"
-                                        onClick={() => addStudent()}
+                                        onClick={() => handleSubmit()}
                                     >
                                         Save
                                     </div>

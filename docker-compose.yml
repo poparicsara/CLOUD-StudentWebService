@@ -23,6 +23,27 @@ services:
     networks:
       - cloud-network
 
+  pmf-container:
+    build: ./PMFBackend 
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./PMFBackend:/app
+    depends_on:
+      - postgres-container
+    networks:
+      - cloud-network
+
+  pmf-postgres:
+    image: postgres
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_PASSWORD=ftn
+      - POSTGRES_USER=ftn
+    networks:
+      - cloud-network
+
 networks:
   cloud-network:
     external: true
